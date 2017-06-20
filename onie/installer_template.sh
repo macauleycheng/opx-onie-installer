@@ -45,6 +45,10 @@ identify_onie_variables()
     'dell_s6000_s1220') # Dell Networking S6000
         GRUB_SERIAL_COMMAND='serial --port=0x3f8 --speed=115200 --word=8 --parity=no --stop=1'
         GRUB_CMDLINE_LINUX='console=ttyS0,115200 intel_idle.max_cstate=0 processor.max_cstate=1'
+
+    'accton_as5712_54x') # Accton AS5712 modle
+        GRUB_SERIAL_COMMAND='serial --port=0x2f8 --speed=115200 --word=8 --parity=no --stop=1'
+        GRUB_CMDLINE_LINUX='console=ttyS1,115200 intel_idle.max_cstate=0 processor.max_cstate=1'
         ;;
     'kvm_x86_64') # KVM Demonstration environment
         GRUB_SERIAL_COMMAND='serial --port=0x3f8 --speed=115200 --word=8 --parity=no --stop=1'
@@ -209,8 +213,8 @@ install_opx()
     sed -e '1,/^__OPX_IMAGE__$/d' "$INSTALLER" | tar -zxf - -C $OPX_MOUNT
 
     # Reconfigure the kernel so that we regenerate the initramfs
-    chroot $OPX_MOUNT dpkg-reconfigure linux-image-3.16.0-4-amd64 &>/dev/null
-
+    #chroot $OPX_MOUNT dpkg-reconfigure linux-image-3.16.0-4-amd64 &>/dev/null
+    chroot $OPX_MOUNT dpkg-reconfigure linux-image-3.16.39 &>/dev/null
     # Reconfigure OpenSSH to regenerate the host keys
     chroot $OPX_MOUNT dpkg-reconfigure openssh-server &>/dev/null
 
@@ -312,6 +316,8 @@ if [ "\${next_entry}" ]; then
 fi
 
 # Default modules required to boot OPX
+insmod gzio
+insmod part_gpt
 insmod ext2
 EOF
 
