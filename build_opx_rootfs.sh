@@ -33,8 +33,13 @@ rsync -avz --chown root:root rootconf/* $tmpdir
 
 # Update the sources and install the kernel
 chroot $tmpdir apt-get update
-chroot $tmpdir apt-get install -y --force-yes linux-image-3.16.0-4-amd64
+chroot $tmpdir apt-get install -y linux-base
+chroot $tmpdir apt-get install -y initramfs-tools
+#chroot $tmpdir apt-get install -y --force-yes linux-image-3.16.0-4-amd64
+cp linux-image-3.16.39_3.16.39_amd64.deb $tmpdir/tmp
+chroot $tmpdir dpkg -i /tmp/linux-image-3.16.39_3.16.39_amd64.deb
 
+chroot $tmpdir apt-get install -y redis-server
 # Add extra open source packages
 chroot $tmpdir apt-get install -y \
     openssh-server \
